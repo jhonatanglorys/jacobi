@@ -84,6 +84,7 @@ void jacobi (
 
     error = 0.0;
     /* copy new solution into old */
+    #pragma omp parallel for private(j,i) shared (m,n)
     for (j=0; j<m; j++)
       for (i=0; i<n; i++){
         UOLD(j,i) = U(j,i);
@@ -267,9 +268,7 @@ int main(int argc, char* argv[]){
 
     /* Solve Helmholtz eqiation */
     r1 = omp_get_wtime();
-
     jacobi(n, m, dx, dy, alpha, relax, u,f, tol, mits);
-
     r1 = omp_get_wtime() - r1;
 
     printf(" elapsed jacobi time : %12.6f\n", r1);

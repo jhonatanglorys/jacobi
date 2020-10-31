@@ -79,9 +79,10 @@ void jacobi (
 
 
   k = 1;
-  
   while (k <= maxit && error > tol) {
-
+  #pragma omp parallel
+  {
+  
     error = 0.0;
     /* copy new solution into old */
     #pragma omp parallel for private(j,i) shared (m,n)
@@ -113,8 +114,8 @@ void jacobi (
     k++;
     error = sqrt(error) /(n*m);
 
+  } /* pragma */
   } /* while */
-
   printf("Total Number of Iterations %d\n", k);
   printf("Residual                   %.15g\n", error);
 }  

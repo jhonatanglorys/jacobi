@@ -90,7 +90,7 @@ void jacobi (
       }
 
     /* compute stencil, residual and update */
-   
+    #pragma omp parallel for reduction(+:error) private(i,j,resid) shared(ax,ay,b,omega)
       for (j=1; j<m-1; j++){
         for (i=1; i<n-1; i++){
           resid =(
@@ -180,7 +180,7 @@ void initialize(
   *dy = 2.0 / (m-1);
 
   /* Initilize initial condition and RHS */
-  
+  #pragma omp parallel for private(i,j,xx,yy) shared(dx,dy,alpha)
   for (j=0; j<m; j++){
     for (i=0; i<n; i++){
       xx = -1.0 + *dx * (i-1);
@@ -237,10 +237,8 @@ int main(int argc, char* argv[]){
     double r1,r2, r3;
 
     /* Read info */ 
-    printf("Input n - grid dimension in x,y direction :\n ");
-    scanf("%d", &n);
-    printf("Input m - grid dimension in x,y direction :\n ");
-    scanf("%d", &m);
+    printf("Input n and m - grid dimension in x,y direction :\n ");
+    scanf("%d,%d ", &n, &m);
     printf("Input alpha - Helmholts constant : \n");
     scanf("%lf", &alpha);
     printf("Input relax - Successive over-relaxation parameter:\n ");
